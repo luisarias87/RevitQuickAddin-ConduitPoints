@@ -14,10 +14,6 @@ namespace RevitQuickAddin
 {
     public class ConduitCurves
     {
-        
-
-        
-
         public ConduitCurves(Document doc,Conduit conduit)
         {
             Doc = doc;
@@ -26,23 +22,15 @@ namespace RevitQuickAddin
             ConduitPoints(doc);
         }
 
-
-
-
         public Document Doc { get; set; }
         public Conduit myConduit { get; set; }
 
-       
-
         public void ConduitPoints(Document doc) 
         {
-                
             
                 Doc = doc;
 
             var conRunsCol = new FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_ConduitRun).Where(e => e.Id == myConduit.RunId).ToList(); 
-
-
 
                 // list of conduits
                 List<Conduit> conduits = new List<Conduit>();
@@ -53,10 +41,6 @@ namespace RevitQuickAddin
 
                 //List of Geometryobjects
                 IList<GeometryObject> geometryObjects = new List<GeometryObject>();
-
-
-
-
 
                 // Conduit Filtererd Element Collector
                 var conCollector = new FilteredElementCollector(doc).OfCategory(BuiltInCategory.OST_Conduit).Where(c => c is Conduit).ToList();

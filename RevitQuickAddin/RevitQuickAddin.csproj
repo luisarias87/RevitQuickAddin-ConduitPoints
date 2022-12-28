@@ -50,6 +50,7 @@
     <Compile Include="BaseSelectionFilter.cs" />
     <Compile Include="Command.cs" />
     <Compile Include="ConduitRunInfo\ConduitCurves.cs" />
+    <Compile Include="Extensions\CableTrayConduitBaseExtensions\CTCBExtensions.cs" />
     <Compile Include="Extensions\UIDocumentExtensions\ElementSelectionFilter.cs" />
     <Compile Include="LinkableSelectionFilter.cs" />
     <Compile Include="LoadFamilies\FamilyLoader.cs" />

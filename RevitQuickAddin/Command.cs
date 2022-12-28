@@ -33,6 +33,12 @@ namespace RevitQuickAddin
 
             var conduitRef = uidoc.Selection.PickObject(ObjectType.Element, new SFilter());
 
+            // the selected Run Element
+            var myRun = doc.GetElement(conduitRef) as CableTrayConduitBase;
+
+
+
+
             // The conduit
             var myConduit = doc.GetElement(conduitRef) as Conduit;
             
@@ -40,7 +46,7 @@ namespace RevitQuickAddin
             
 
 
-            ConduitCurves conduitCurves = new ConduitCurves(doc, myConduit) ;
+            //ConduitCurves conduitCurves = new ConduitCurves(doc, myConduit) ;
 
             
             
