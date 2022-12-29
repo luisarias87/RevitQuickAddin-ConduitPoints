@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RevitQuickAddin.Extensions.CableTrayConduitBaseExtensions
+namespace RevitQuickAddin.MepCurveExtensions
 {
-    internal class CTCBExtensions
+    internal class MepCurveExtensions
     {
     }
 }

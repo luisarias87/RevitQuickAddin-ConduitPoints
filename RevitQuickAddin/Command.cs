@@ -36,26 +36,13 @@ namespace RevitQuickAddin
             // the selected Run Element
             var myRun = doc.GetElement(conduitRef) as CableTrayConduitBase;
 
-
+            var fileter = new FilteredElementCollector(doc).OfClass(typeof(MEPCurve));
 
 
             // The conduit
             var myConduit = doc.GetElement(conduitRef) as Conduit;
-            
-
-            
-
 
             //ConduitCurves conduitCurves = new ConduitCurves(doc, myConduit) ;
-
-            
-            
-
-            
-            
-
-           
-
 
             return Result.Succeeded;
         }
