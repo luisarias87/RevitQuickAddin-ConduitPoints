@@ -33,14 +33,67 @@ namespace RevitQuickAddin
 
             var conduitRef = uidoc.Selection.PickObject(ObjectType.Element, new SFilter());
 
-            // the selected Run Element
-            var myRun = doc.GetElement(conduitRef) as CableTrayConduitBase;
+            // the selected Conduit
+            Conduit myConduit = doc.GetElement(conduitRef) as Conduit;
 
-            var fileter = new FilteredElementCollector(doc).OfClass(typeof(MEPCurve));
+            // Empty list of run elements
+            IList<Conduit> runConduits = new List<Conduit>();
+
+            IList<Element> runElements = new List<Element>();
 
 
-            // The conduit
-            var myConduit = doc.GetElement(conduitRef) as Conduit;
+            ConnectorSet set = new ConnectorSet();
+
+            ConnectorSet allRefs = new ConnectorSet();
+
+
+
+            var confilter = new FilteredElementCollector(doc).OfClass(typeof(Conduit)).ToList();
+
+            foreach (Conduit conduit in confilter)
+            {
+
+                if (conduit.RunId == myConduit.RunId)
+                {
+                    runConduits.Add(conduit);
+                    runElements.Add(conduit);
+                    foreach (Connector item in conduit.ConnectorManager.Connectors)
+                    {
+                        set.Insert(item);
+                    }
+                }
+            }
+            foreach (Connector c in set)
+            {
+                if (c.IsConnected )
+                {
+                    allRefs.Insert(c);
+                }
+            }
+            foreach (Connector c in allRefs) 
+            {
+                if (c.Owner is FamilyInstance)
+                {
+                    runElements.Add(c.Owner);
+                }
+            }
+            
+            
+            
+            
+            
+          
+
+
+
+
+
+
+
+
+
+
+            
 
             //ConduitCurves conduitCurves = new ConduitCurves(doc, myConduit) ;
 
