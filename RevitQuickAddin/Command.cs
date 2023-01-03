@@ -22,8 +22,6 @@ namespace RevitQuickAddin
     internal class Command : IExternalCommand
     {
 
-        
-
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             var uiapp = commandData.Application;
@@ -34,63 +32,11 @@ namespace RevitQuickAddin
             var conduitRef = uidoc.Selection.PickObject(ObjectType.Element, new SFilter());
 
             // the selected Conduit
-            Conduit myConduit = doc.GetElement(conduitRef) as Conduit;
+            Element myConduit = doc.GetElement(conduitRef) as Element;
 
-            // Empty list of run elements
-            IList<Conduit> runConduits = new List<Conduit>();
-
-            IList<Element> runElements = new List<Element>();
-
-
-            ConnectorSet set = new ConnectorSet();
-
-            ConnectorSet allRefs = new ConnectorSet();
-
-
-
-            var confilter = new FilteredElementCollector(doc).OfClass(typeof(Conduit)).ToList();
-
-            foreach (Conduit conduit in confilter)
-            {
-
-                if (conduit.RunId == myConduit.RunId)
-                {
-                    runConduits.Add(conduit);
-                    runElements.Add(conduit);
-                    foreach (Connector item in conduit.ConnectorManager.Connectors)
-                    {
-                        set.Insert(item);
-                    }
-                }
-            }
-            foreach (Connector c in set)
-            {
-                if (c.IsConnected )
-                {
-                    allRefs.Insert(c);
-                }
-            }
-            foreach (Connector c in allRefs) 
-            {
-                if (c.Owner is FamilyInstance)
-                {
-                    runElements.Add(c.Owner);
-                }
-            }
-            
-            
-            
-            
-            
-          
-
-
-
-
-
-
-
-
+            var owners = GetAllRefs(myConduit);
+            owners.Remove(myConduit);
+            TaskDialog.Show("Revit", owners.Count.ToString());
 
 
             
@@ -99,12 +45,64 @@ namespace RevitQuickAddin
 
             return Result.Succeeded;
         }
+        public IList<Element> GetAllRefs(Element element) 
+        {
+            Element myElement = element as Element;
+
+            ConnectorSet famConnectorSet = new ConnectorSet();
+
+            ConnectorSet curveConnectorSet = new ConnectorSet();
+
+            ConnectorSet  allRefs = new ConnectorSet(); 
+
+            IList<Connector> connected = new List<Connector>();
+
+            IList<Element> Owners = new List<Element>();   
+
+            if (myElement is FamilyInstance familyInstance)
+            {
+                famConnectorSet = familyInstance.MEPModel.ConnectorManager.Connectors;
+            }
+
+            if (myElement is MEPCurve curve)
+            {
+                curveConnectorSet = curve.ConnectorManager.Connectors;
+            }
+
+            foreach (Connector connector in famConnectorSet)
+            {
+                if (connector.IsConnected)
+                {
+                    connected.Add(connector);
+                    allRefs = connector.AllRefs;
+
+                }
+            }
+            foreach (Connector connector1 in curveConnectorSet)
+            {
+                if (connector1.IsConnected)
+                {
+                    connected.Add(connector1);
+                    allRefs = connector1.AllRefs;
+
+                }
+            }
+
+            foreach (Connector refs in allRefs)
+            {
+                
+                    Owners.Add(refs.Owner);
+            }
+            Owners.Remove(myElement);
+
+            return Owners;
+        }
 
         public void ElementGeometry(Autodesk.Revit.DB.Document doc,Element element) 
         {
             
 
-            var geometry = element.get_Geometry(new Options() {View = doc.ActiveView });
+            var geometry = element.get_Geometry(new Options() {View = doc.ActiveView});
 
             foreach (var gObject in geometry)
             {

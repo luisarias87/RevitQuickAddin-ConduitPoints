@@ -13,17 +13,11 @@ namespace RevitQuickAddin.MepCurveExtensions
 {
     public static class MepCurveExtensions
     {
-        
-
-
 
         public static MEPSystem GetConduitOrCTrayElements(this MEPCurve mepCurve , Document doc) 
         {
-
             return mepCurve.MEPSystem;
-
         }
-
 
         public static ElementSet GetDuctOrPipeElements(this MEPCurve mepCurve,Document doc) 
         {
