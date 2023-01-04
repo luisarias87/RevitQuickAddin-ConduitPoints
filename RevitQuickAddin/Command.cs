@@ -9,11 +9,13 @@ using Autodesk.Revit.Attributes;
 using Autodesk.Revit.Creation;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Electrical;
+using Autodesk.Revit.DB.Structure;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.UI.Events;
 using Autodesk.Revit.UI.Selection;
 using RevitQuickAddin.Extensions.UIDocumentExtensions;
 using RevitQuickAddin.LoadFamilies;
+using RevitQuickAddin.MepCurveExtensions;
 
 namespace RevitQuickAddin
 {
@@ -32,14 +34,32 @@ namespace RevitQuickAddin
             var conduitRef = uidoc.Selection.PickObject(ObjectType.Element, new SFilter());
 
             // the selected Conduit
-            Element myConduit = doc.GetElement(conduitRef) as Element;
+            MEPCurve myConduit = doc.GetElement(conduitRef) as MEPCurve;
 
-            var owners = GetAllRefs(myConduit);
-            owners.Remove(myConduit);
-            TaskDialog.Show("Revit", owners.Count.ToString());
+            // the list of elements in the run 
+            var runElements = new List<Element>();
 
+            // Element connected to my conduit
+            var elementsConnectedTomyconduit =  myConduit.GetConnectedConduitElements();
+
+            Element next = null;
+
+            foreach (var element in elementsConnectedTomyconduit)
+            {
+                runElements.Add(element);
+                next = elementsConnectedTomyconduit.Last();
+            }
+            while (next != null)
+            {
+                var iterate = myConduit.GetAllRefs(next);
+                runElements.Add(iterate.Last());
+                next = iterate.Last();
+            }
+            
 
             
+
+
 
             //ConduitCurves conduitCurves = new ConduitCurves(doc, myConduit) ;
 
@@ -53,7 +73,7 @@ namespace RevitQuickAddin
 
             ConnectorSet curveConnectorSet = new ConnectorSet();
 
-            ConnectorSet  allRefs = new ConnectorSet(); 
+            IList<Connector>  allRefs = new List<Connector>(); 
 
             IList<Connector> connected = new List<Connector>();
 
@@ -74,7 +94,10 @@ namespace RevitQuickAddin
                 if (connector.IsConnected)
                 {
                     connected.Add(connector);
-                    allRefs = connector.AllRefs;
+                    foreach (Connector c in connector.AllRefs)
+                    {
+                        allRefs.Add(c);
+                    }
 
                 }
             }
@@ -83,17 +106,23 @@ namespace RevitQuickAddin
                 if (connector1.IsConnected)
                 {
                     connected.Add(connector1);
-                    allRefs = connector1.AllRefs;
+                    foreach (Connector c in connector1.AllRefs)
+                    {
+                        allRefs.Add(c);
+                    }
 
                 }
             }
 
             foreach (Connector refs in allRefs)
             {
-                
+                if (refs.Owner.Id != myElement.Id) 
+                {
                     Owners.Add(refs.Owner);
+                }
+                    
             }
-            Owners.Remove(myElement);
+            //Owners.Remove(myElement);
 
             return Owners;
         }

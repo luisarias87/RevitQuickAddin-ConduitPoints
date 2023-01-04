@@ -15,7 +15,7 @@ namespace RevitQuickAddin
     {
         public bool AllowElement(Element elem)
         {
-           return  elem is Conduit;
+           return  elem is Element;
         }
 
         public bool AllowReference(Reference reference, XYZ position)

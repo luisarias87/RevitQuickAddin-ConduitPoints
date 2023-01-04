@@ -55,6 +55,7 @@
     <Compile Include="LoadFamilies\FamilyLoader.cs" />
     <Compile Include="LoadFamily.cs" />
     <Compile Include="MepCurveExtensions\MepCurveExtensions.cs" />
+    <Compile Include="MepCurveRunelements.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SFilter.cs" />
   </ItemGroup>
