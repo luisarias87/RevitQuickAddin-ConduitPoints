@@ -68,16 +68,9 @@ namespace RevitQuickAddin
             {
                 var iterate =  curve.GetAllRefs(next);
                 runElements.Add(iterate.First());
-                if (next is MEPCurve)
-                {
-                    next = iterate.First();
-                }
-                else
-                {
-                    next = iterate.Last();
-                }
                 
-
+                    next = iterate.Last();
+                
             }
             foreach (var ele in runElements)
             {

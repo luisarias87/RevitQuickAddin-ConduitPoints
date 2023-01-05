@@ -64,7 +64,7 @@ namespace RevitQuickAddin
                     
                     foreach (Connector c in connector1.AllRefs)
                     {
-                        if (c.Owner.Id != element.Id)
+                        if (c.Owner != element)
                         {
                             allRefs.Add(c);
                             Owners.Add(c.Owner);
