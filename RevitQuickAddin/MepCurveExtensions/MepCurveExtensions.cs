@@ -109,18 +109,16 @@ namespace RevitQuickAddin.MepCurveExtensions
                     connected.Add(connector1);
                     foreach (Connector c in connector1.AllRefs)
                     {
-                        allRefs.Add(c);
+                        if (c.Owner.Id != mepCurve.Id)
+                        {
+                            allRefs.Add(c);
+                            Owners.Add(c.Owner);
+                        }
                     }
+                        
                 }
             }
-            foreach (Connector refs in allRefs)
-            {
-                if (refs.Owner.Id != mepCurve.Id)
-                {
-                   Owners.Add(refs.Owner);
-                }
-
-            }
+            
 
             return Owners;
 

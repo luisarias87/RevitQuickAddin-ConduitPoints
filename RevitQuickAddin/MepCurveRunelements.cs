@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using Autodesk.Revit.DB;
@@ -45,8 +46,13 @@ namespace RevitQuickAddin
                     connected.Add(connector);
                     foreach (Connector c in connector.AllRefs)
                     {
-                        allRefs.Add(c);
+                        
+                        
+                            allRefs.Add(c);
+
+                        Owners.Add(c.Owner);
                     }
+
 
                 }
             }
@@ -55,23 +61,21 @@ namespace RevitQuickAddin
                 if (connector1.IsConnected)
                 {
                     connected.Add(connector1);
+                    
                     foreach (Connector c in connector1.AllRefs)
                     {
-                        allRefs.Add(c);
+                        if (c.Owner.Id != element.Id)
+                        {
+                            allRefs.Add(c);
+                            Owners.Add(c.Owner);
+                        }
                     }
 
                 }
             }
 
-            foreach (Connector refs in allRefs)
-            {
-                if (refs.Owner.Id != myElement.Id)
-                {
-                    Owners.Add(refs.Owner);
-                }
-
-            }
-            //Owners.Remove(myElement);
+            
+           
 
             return Owners;
         }

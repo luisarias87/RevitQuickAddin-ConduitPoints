@@ -36,29 +36,54 @@ namespace RevitQuickAddin
             // the selected Conduit
             MEPCurve myConduit = doc.GetElement(conduitRef) as MEPCurve;
 
+
             // the list of elements in the run 
             var runElements = new List<Element>();
 
+            // list of to add and remove
+            var addRemove = new List<Element>();
+
+            var curve = new MepCurveRunelements();
+
             // Element connected to my conduit
             var elementsConnectedTomyconduit =  myConduit.GetConnectedConduitElements();
+
+            runElements.Add(myConduit as Conduit);
+            
+
 
             Element next = null;
 
             foreach (var element in elementsConnectedTomyconduit)
             {
-                runElements.Add(element);
+                // add the elements to my run elements list
+                
                 next = elementsConnectedTomyconduit.Last();
+
+
+
             }
+            
             while (next != null)
             {
-                var iterate = myConduit.GetAllRefs(next);
-                runElements.Add(iterate.Last());
-                next = iterate.Last();
+                var iterate =  curve.GetAllRefs(next);
+                runElements.Add(iterate.First());
+                if (next is MEPCurve)
+                {
+                    next = iterate.First();
+                }
+                else
+                {
+                    next = iterate.Last();
+                }
+                
+
+            }
+            foreach (var ele in runElements)
+            {
+                TaskDialog.Show("Revit", ele.Id.ToString()) ;
             }
             
-
-            
-
 
 
             //ConduitCurves conduitCurves = new ConduitCurves(doc, myConduit) ;
