@@ -5,6 +5,7 @@ using System.Net.Sockets;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using Autodesk.Revit.Attributes;
 using Autodesk.Revit.Creation;
 using Autodesk.Revit.DB;
@@ -48,7 +49,7 @@ namespace RevitQuickAddin
             // Element connected to my conduit
             var elementsConnectedTomyconduit =  myConduit.GetConnectedConduitElements();
 
-            runElements.Add(myConduit as Conduit);
+            
             
 
 
@@ -59,18 +60,38 @@ namespace RevitQuickAddin
                 // add the elements to my run elements list
                 
                 next = elementsConnectedTomyconduit.Last();
-
-
-
+                
+                runElements.Add(next);
             }
+            runElements.Add(myConduit as Conduit);
             
             while (next != null)
             {
-                var iterate =  curve.GetAllRefs(next);
-                runElements.Add(iterate.First());
+                IList<Element> iterate =  curve.GetAllRefs(next);
+                foreach (var item in iterate)
+                {
+                    Element x = null;
+
+                    if (!runElements.Contains(item))
+                    {
+                        runElements.Add(item);
+                        x = item as Element;
+                    }
+
+                    else
+                    {
+                        
+                    }
+                    next = item;
+
+                }
+                        
+                    
+
                 
-                    next = iterate.Last();
                 
+
+
             }
             foreach (var ele in runElements)
             {

@@ -23,11 +23,9 @@ namespace RevitQuickAddin
 
             ConnectorSet curveConnectorSet = new ConnectorSet();
 
-            IList<Connector> allRefs = new List<Connector>();
+            IList<Element> connectedElements = new List<Element>();
 
-            IList<Connector> connected = new List<Connector>();
 
-            IList<Element> Owners = new List<Element>();
 
             if (myElement is FamilyInstance familyInstance)
             {
@@ -43,41 +41,35 @@ namespace RevitQuickAddin
             {
                 if (connector.IsConnected)
                 {
-                    connected.Add(connector);
                     foreach (Connector c in connector.AllRefs)
                     {
-                        
-                        
-                            allRefs.Add(c);
-
-                        Owners.Add(c.Owner);
+                        if (c.Owner.Id != element.Id)
+                        {
+                            connectedElements.Add(c.Owner);
+                        }
                     }
-
-
                 }
             }
             foreach (Connector connector1 in curveConnectorSet)
             {
                 if (connector1.IsConnected)
                 {
-                    connected.Add(connector1);
-                    
                     foreach (Connector c in connector1.AllRefs)
                     {
-                        if (c.Owner != element)
+                        if (c.Owner.Id != element.Id)
                         {
-                            allRefs.Add(c);
-                            Owners.Add(c.Owner);
+                            connectedElements.Add(c.Owner);
                         }
                     }
 
                 }
             }
+            
 
             
            
 
-            return Owners;
+            return connectedElements;
         }
 
         
