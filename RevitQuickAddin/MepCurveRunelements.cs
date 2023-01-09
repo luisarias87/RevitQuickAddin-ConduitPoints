@@ -66,9 +66,6 @@ namespace RevitQuickAddin
             }
             
 
-            
-           
-
             return connectedElements;
         }
 

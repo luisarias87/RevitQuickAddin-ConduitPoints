@@ -39,57 +39,63 @@ namespace RevitQuickAddin
 
 
             // the list of elements in the run 
-            var runElements = new List<Element>();
+            IList<Element> runElements = new List<Element>();
 
             // list of to add and remove
             var addRemove = new List<Element>();
 
-            var curve = new MepCurveRunelements();
+            var conduit = new MepCurveRunelements();
 
             // Element connected to my conduit
-            var elementsConnectedTomyconduit =  myConduit.GetConnectedConduitElements();
+            var connectedElement =  myConduit.GetConnectedConduitElements();
 
-            
-            
-
-
-            Element next = null;
-
-            foreach (var element in elementsConnectedTomyconduit)
-            {
-                // add the elements to my run elements list
-                
-                next = elementsConnectedTomyconduit.Last();
-                
-                runElements.Add(next);
-            }
             runElements.Add(myConduit as Conduit);
+
+            Element before = null;
+            before = myConduit;
+
+            Element current = null;
+            current = connectedElement;
+
+            runElements.Add(current);
             
-            while (next != null)
+                
+            while (current  != null)
             {
-                IList<Element> iterate =  curve.GetAllRefs(next);
-                foreach (var item in iterate)
+                IList<Element>  conElements=  conduit.GetAllRefs(current);
+
+                Element element1 = null; 
+
+                foreach (var element in conElements)
                 {
-                    Element x = null;
-
-                    if (!runElements.Contains(item))
+                    if (element.Id == before.Id)
                     {
-                        runElements.Add(item);
-                        x = item as Element;
+                        
+                       
                     }
-
                     else
                     {
+                        runElements.Add(element);
+                        element1 = element;
                         
                     }
-                    next = item;
+                        
+                }
+                before = current;
+                current = element1;
+
+
+                foreach (var element in runElements)
+                {
+                    if (element.Id == before.Id && conElements.Count<2)
+                    {
+                        current = null;
+                    }
 
                 }
-                        
-                    
 
-                
-                
+
+
 
 
             }

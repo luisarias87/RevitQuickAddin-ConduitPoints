@@ -15,12 +15,12 @@ namespace RevitQuickAddin.MepCurveExtensions
     public static class MepCurveExtensions 
     {
 
-        public static IList<Element> GetConnectedConduitElements(this MEPCurve mepCurve) 
+        public static Element GetConnectedConduitElements(this MEPCurve mepCurve) 
         {
 
             ConnectorSet curveConnectorSet = new ConnectorSet();
 
-            IList<Element> connectedElements = new List<Element>();
+            Element connectedElement = null;
             
                 curveConnectorSet = mepCurve.ConnectorManager.Connectors;
             
@@ -32,7 +32,7 @@ namespace RevitQuickAddin.MepCurveExtensions
                     {
                         if (c.Owner.Id != mepCurve.Id)
                         {
-                            connectedElements.Add(c.Owner);
+                            connectedElement = c.Owner;
                         }
                     }
                         
@@ -40,7 +40,7 @@ namespace RevitQuickAddin.MepCurveExtensions
             }
 
 
-            return connectedElements;
+            return connectedElement;
 
         }
 
